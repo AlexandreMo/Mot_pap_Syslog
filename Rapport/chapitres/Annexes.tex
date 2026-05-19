@@ -1,0 +1,397 @@
+\section{Annexes}
+\begin{verbatim}
+-------------------------------------------------------------------------------
+-- HEIG-VD, Haute Ecole d'Ingenierie et de Gestion du canton de Vaud
+-- Institut REDS, Reconfigurable & Embedded Digital Systems
+--
+-- File         : dff.vhd
+-- Description  : Description d'elements memoire en VHDL synthetisable :
+--                -> Flip-flop D
+--
+-- Author       : Etienne Messerli
+-- Date         : 22.10.2014
+-- Version      : 0.0
+--
+-- Dependencies : 
+--
+--| Modifications |------------------------------------------------------------
+-- Version   Author Date               Description
+-- 0.0       EMI    22.10.14           Creation
+-- 1.0       YNG    28.01.25           Update entity name
+-- 1.1       AME    14.04.25           Update exercice
+
+-------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+--use ieee.numeric_std.all;
+
+entity dff_ar is
+   port( 
+      reset_i   : in    std_logic;
+      Clk_i   : in    std_logic;
+      D_i     : in    std_logic;
+      Q_o     : out   std_logic;
+      nQ_o    : out   std_logic
+   );
+end dff_ar ;
+
+architecture comport of dff_ar is
+
+  signal D_s : std_logic; 
+  signal Q_s : std_logic; 
+
+begin
+  
+   D_s <= D_i; -- Décodeur d'états présent
+  
+   process(reset_i, Clk_i)
+   begin
+      if reset_i = '1' then
+      Q_s <= '0';
+      elsif rising_edge(Clk_i) then
+      Q_s <= D_s;
+      end if;
+   end process;
+ 
+ 
+   Q_o <= Q_s;
+   nQ_o <= not(Q_s);
+ end comport;
+\end{verbatim}
+\newpage
+\begin{verbatim}
+-------------------------------------------------------------------------------
+-- HEIG-VD, Haute Ecole d'Ingenierie et de Gestion du canton de Vaud
+-- Institut REDS, Reconfigurable & Embedded Digital Systems
+--
+-- File         : dff_en.vhd
+-- Description  : Description d'elements memoire en VHDL synthetisable :
+--                -> Flip-flop D avec enable
+--
+-- Author       : Etienne Messerli
+-- Date         : 22.10.2014
+-- Version      : 0.0
+--
+-- Dependencies : 
+--
+--| Modifications |------------------------------------------------------------
+-- Version   Author Date               Description
+-- 0.0       EMI    22.10.14           Creation
+-- 1.0       YNG    28.01.25           Update entity name
+-- 1.1       AME    14.04.25           Update exercice
+-------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+--use ieee.numeric_std.all;
+
+entity dff_en is
+   port( 
+      nReset_i   : in    std_logic;
+      Clk_i   : in    std_logic;
+      D_i     : in    std_logic;
+      EN_i    : in    std_logic;
+      Q_o     : out   std_logic;
+      nQ_o    : out   std_logic
+   );
+end dff_en ;
+
+architecture comport of dff_en is
+   -- Signaux internes 
+  signal reset_s : std_logic;
+  signal D_s : std_logic; 
+  signal Q_s : std_logic;
+begin
+   -- Adaptation polarité
+   reset_s <= not(nReset_i);
+   -- Décodeur d'états présent
+   D_s <= D_i when (EN_i = '1') else Q_s;
+  
+   -- Process de bascule
+   process(reset_s, Clk_i)
+   begin
+      if reset_s = '1' then
+      Q_s <= '0'; -- Etat par défaut
+      elsif rising_edge(Clk_i) then
+      Q_s <= D_s;
+      end if;
+   end process;
+ 
+   -- Sorties
+   Q_o <= Q_s;
+   nQ_o <= not(Q_s);
+ end comport;
+-- End of file dff_en.vhd
+\end{verbatim}
+\newpage
+\begin{verbatim}
+-------------------------------------------------------------------------------
+-- HEIG-VD, Haute Ecole d'Ingenierie et de Gestion du canton de Vaud
+-- Institut REDS, Reconfigurable & Embedded Digital Systems
+--
+-- Fichier      : flipflop_t.vhd
+-- Description  : Flip-flop T (toggle) soit 
+--                  si T_i actif alors Q+ = not Q sinon Q+ = Q
+-- 
+-- Auteur       : Etienne Messerli,  2.10.2014
+-- 
+-- Utilise      : Exos description d'elements memoire en VHDL synthetisable
+--| Modifications |------------------------------------------------------------
+-- Vers.  Qui   Date         Description
+-- 1.0    EMI  03.04.2019    Change nom entite/fichier => flipflop_t
+-- 1.1    AME    14.04.25    Update vhdl code for flipflop_t, add comments and end of file statement
+-------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity flipflop_t is
+   port(clk_i    : in     std_logic;
+        reset_i  : in     std_logic;
+        T_i      : in     std_logic;
+        Q_o      : out    std_logic
+   );
+end flipflop_t ;
+
+
+architecture comport of flipflop_t is
+  signal reset_s : std_logic;
+  signal D_s : std_logic;
+  signal Q_s : std_logic;
+  
+
+begin
+  --Adaptation polarite
+  reset_s <= reset_i;
+  -- Decodeur d'etats present
+  D_s <= not(Q_s) when (T_i = '1') else Q_s;
+  
+
+  -- Process de bascule
+  process(reset_s, clk_i)
+  begin
+      if reset_s = '1' then
+      Q_s <= '0'; -- Etat par défaut
+      elsif rising_edge(clk_i) then
+      Q_s <= D_s;
+      end if;
+   end process;
+  
+  
+   -- Sortie
+   Q_o <= Q_s;
+
+end comport;
+-- End of file flipflop_t.vhd
+\end{verbatim}
+\newpage
+\begin{verbatim}
+-------------------------------------------------------------------------------
+-- HEIG-VD, Haute Ecole d'Ingenierie et de Gestion du canton de Vaud
+-- Institut REDS, Reconfigurable & Embedded Digital Systems
+--
+-- Fichier      : flipflop_rs.vhd
+-- Auteur       : Etienne Messerli,  20.04.2017
+-- Description  : Flip-flop RS
+-- 
+-- 
+-- Utilise      : Exos description d'elements memoire en VHDL synthetisable
+--| Modifications |------------------------------------------------------------
+-- Vers.  Qui   Date         Description
+-- 1.0    AME   17.04.2026   Update VHDL code for flipflop_rs, add comments and end of file statement
+-------------------------------------------------------------------------------
+
+--   Table de fonctionnement synchrone
+--   du flip-flop RS
+--
+--    R  S |   Q+
+--   ------+-------
+--    0  0 |   Q
+--    0  1 |   1
+--    1  0 |   0
+--    1  1 | interdit
+
+
+
+
+library ieee;
+  use ieee.std_logic_1164.all;
+
+entity flipflop_rs is
+   port(clk_i    : in     std_logic;
+        reset_i  : in     std_logic;  --asynchrone
+        R_i      : in     std_logic;  --synchrone
+        S_i      : in     std_logic;  --synchrone
+        Q_o      : out    std_logic
+   );
+end flipflop_rs ;
+
+
+architecture comport of flipflop_rs is
+  signal D_s : std_logic;
+  signal Q_s : std_logic;
+begin
+  --Adaptation polarite
+  -- Decodeur d'etats present
+  D_s <= '1' when (S_i = '1') else -- Set
+         '0' when (R_i = '1') else -- Reset
+         Q_s; -- Maintien
+  
+
+  -- Process de bascule
+  process(reset_i, clk_i)
+  begin
+      if reset_i = '1' then
+      Q_s <= '0'; -- Etat par défaut
+      elsif rising_edge(clk_i) then
+      Q_s <= D_s;
+      end if;
+  
+  end process;
+  
+    -- Sortie
+   Q_o <= Q_s;
+
+
+end comport;
+-- End of file flipflop_rs.vhd
+\end{verbatim}
+\newpage
+\begin{verbatim}
+-------------------------------------------------------------------------------
+-- HEIG-VD, Haute Ecole d'Ingenierie et de Gestion du canton de Vaud
+-- Institut REDS, Reconfigurable & Embedded Digital Systems
+--
+-- Fichier      : latch_en.vhd
+--
+-- Description  : 
+-- 
+-- Auteur       : Etienne Messerli
+-- Date         : 22.10.2014
+-- Version      : 0.0
+-- 
+-- Utilise      : Exercice de description d'elements memoire
+--                en VHDL synthetisable
+-- 
+--| Modifications |------------------------------------------------------------
+-- Version   Auteur Date               Description
+-- 0.0       EM   22.10.2014           Creation
+-- 1.0       AM   17.04.2026           Update VHDL code for latch_en
+-------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity latch_en is
+   port( 
+      en_i   : in     std_logic;
+      reset_i : in     std_logic;
+      D_i     : in     std_logic;
+      Q_o     : out    std_logic
+   );
+end latch_en ;
+
+architecture comport of latch_en is
+  signal D_s : std_logic; -- etat present du latch
+  signal reset_s : std_logic; -- etat present du latch
+  signal en_s : std_logic; -- etat present du latch
+  
+  signal Q_s : std_logic;
+begin
+   -- Decodeur d'etats present
+   D_s <= D_i;
+   reset_s <= reset_i;
+   en_s <= en_i;
+   -- Process de bascule
+   process(en_s, D_s,reset_s)
+   begin
+   if reset_s = '1' then
+   Q_s <= '0';
+   elsif en_s = '1' then
+   Q_s <= D_s;
+   end if;
+   end process;
+   --- Sortie
+   Q_o <= Q_s;
+
+
+  
+end comport;
+-- End of file latch_en.vhd
+\end{verbatim}
+\newpage
+\begin{verbatim}
+-------------------------------------------------------------------------------
+-- HEIG-VD, Haute Ecole d'Ingenierie et de Gestion du canton de Vaud
+-- Institut REDS, Reconfigurable & Embedded Digital Systems
+--
+-- Fichier      : flipflop_jk.vhd
+-- Auteur       : Etienne Messerli,  20.04.2017
+-- Description  : Flip-flop JK
+-- 
+-- 
+-- Utilise      : Exos description d'elements memoire en VHDL synthetisable
+--| Modifications |------------------------------------------------------------
+-- Vers.  Qui   Date         Description
+-- 1.0    AME   17.04.2026   Update VHDL code for flipflop_jk, add comments and end of file statement
+-------------------------------------------------------------------------------
+
+--   Table de fonctionnement synchrone
+--   du flip-flop JK
+--
+--    J  K |   Q+
+--   ------+-------
+--    0  0 |   Q
+--    0  1 |   0
+--    1  0 |   1
+--    1  1 | not Q
+
+
+
+
+library ieee;
+  use ieee.std_logic_1164.all;
+
+entity flipflop_jk is
+   port(clk_i    : in     std_logic;
+        reset_i  : in     std_logic;
+        J_i      : in     std_logic;
+        K_i      : in     std_logic;
+        Q_o      : out    std_logic;
+        nQ_o     : out    std_logic
+   );
+end flipflop_jk ;
+
+
+architecture comport of flipflop_jk is
+  signal reset_s : std_logic;
+  signal D_s : std_logic; -- etat present du flip-flop
+  signal Q_s : std_logic;
+begin
+  --Adaptation polarite
+  reset_s <= reset_i;
+  -- Decodeur d'etats present
+  D_s <= not(Q_s) when (J_i = '1' and K_i = '1') else -- Toggle
+			'1' when (J_i = '1') else -- Set
+         '0' when (K_i = '1') else -- Reset
+          Q_s; -- Maintien
+  
+  -- Process de bascule
+  process(reset_s, clk_i)
+  begin
+      if reset_s = '1' then
+      Q_s <= '0'; -- Etat par défaut
+      elsif rising_edge(clk_i) then
+      Q_s <= D_s;
+      end if;
+   end process;
+  
+   -- Sorties
+   Q_o <= Q_s;
+   nQ_o <= not(Q_s);
+
+
+end comport;
+-- End of file flipflop_jk.vhd
+\end{verbatim}

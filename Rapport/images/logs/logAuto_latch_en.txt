@@ -1,0 +1,26 @@
+-- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Compiling entity latch_en_tb
+# -- Compiling architecture test_bench of latch_en_tb
+# -- Loading entity latch_en
+# ** Warning: ../src_tb/latch_en_tb.vhd(55): (vcom-1236) Shared variables must be of a protected type.
+# End time: 11:23:13 on Apr 15,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 1
+# End time: 11:23:13 on Apr 15,2026, Elapsed time: 0:00:35
+# Errors: 5, Warnings: 0
+# vsim -voptargs=""+acc"" work.latch_en_tb 
+# Start time: 11:23:13 on Apr 15,2026
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading work.latch_en_tb(test_bench)#1
+# Loading work.latch_en(comport)#1
+run -all
+# ** Note: >> Debut de la simulation
+#    Time: 0 ns  Iteration: 0  Instance: /latch_en_tb
+# ** Note: >>Nombre d'erreur détectée = 0
+#    Time: 752 ns  Iteration: 0  Instance: /latch_en_tb
+# ** Note: >>Fin de la simulation
+#    Time: 752 ns  Iteration: 0  Instance: /latch_en_tb
