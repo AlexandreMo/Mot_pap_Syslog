@@ -30,8 +30,7 @@ entity UT is
         clk_i                 : in  std_logic;
         rst_i                 : in  std_logic;
 
-        -- to be completed
-
+         
 
         --Contrainte : l'activation des moteurs est fait depuis l'UT
         --L'UT aura des elements memoires pour ces actions commandees par l'UC
