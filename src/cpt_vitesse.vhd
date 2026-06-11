@@ -2,11 +2,11 @@
 -- HEIG-VD, Haute Ecole d'Ingenierie et de Gestion du canton de Vaud
 -- Institut REDS, Reconfigurable & Embedded Digital Systems
 --
--- Fichier      : UT.vhd
+-- Fichier      : cpt_vitesses.vhd
 --
--- Description  : UT pour la commande des 3 moteurs pas-a-pas
+-- Description  : Compteur de vitesse pour la commande des 3 moteurs pas-a-pas
 --
--- Auteur       : ....
+-- Auteur       : A.Moore 
 -- Date         : 21.05.2024
 -- Version      : 1.0
 --
@@ -25,52 +25,45 @@ library ieee;
 -------------------------------------------------------------------------------
 
 --| Entity |-------------------------------------------------------------------
-entity UT is
+entity cpt_vitesse is
     port(
         clk_i                 : in  std_logic;
         rst_i                 : in  std_logic;
-
-         
-        sel_speed_o           : out std_logic;
-        en_l_o                : out std_logic;
-        en_m_o                : out std_logic;
-        en_r_o                : out std_logic;
-        dir_l_o               : out std_logic;
-        dir_m_o               : out std_logic;
-        dir_r_o               : out std_logic
+        ld_vit_i              : in std_logic;
+        en_vit_i              : in std_logic;
+        cpt_vit               : out std_logic_vector(1 downto 0)
     );
-end UT;
+end cpt_vitesse;
 -------------------------------------------------------------------------------
 
 --| Architecture |-------------------------------------------------------------
-architecture behave of UT is
+architecture behave of cpt_vitesse is
 
     --| Constantes |-----------------------------------------------------------
 
-    -- to be completed
-
-
-
     --| Signals |--------------------------------------------------------------
-
-    -- to be completed
-
-
-
-    --| Components |-----------------------------------------------------------
-    mem_tours : 
-
+    
+    signal cpt_fut, cpt_pres : unsigned(3 downto 0);
 
 
 begin
-    -- Synchronisation du nombre de tours
-    mem_tours : srg4
-    port map(
-        clk_i        => clk_i,
-        rst_i        => rst_i,
 
-    );
-    
+    --Description concurrente du décodeur d'états futur--odre de priorite : charge, compte, maintien
+    cpt_fut <= (others = '0') when (ld_vit_i = '1') else
+                cpt_pres + 1 when (en_vit_i = '1') else --compte
+                cpt_pres; --maintien
+
+    mem: process (clock_i, reset_i)
+        begin
+            if (reset_i = '1') then
+            cpt_pres <= "00";
+            elsif rising_edge(clock_i) then
+            cpt_pres <= cpt_fut;
+            end if;
+        end process;
+    --Décodeur de sortie
+    --Mise a jour de l'etat du compteur
+    cpt_o <= std_logic_vector(cpt_pres);
 
 
 
