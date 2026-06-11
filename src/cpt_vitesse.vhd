@@ -29,10 +29,11 @@ entity cpt_vitesse is
     port(
         clk_i                 : in  std_logic;
         rst_i                 : in  std_logic;
-        ld_vit_i              : in std_logic;
-        en_vit_i              : in std_logic;
-        cpt_vit               : out std_logic_vector(1 downto 0)
-    );
+        ld_vit_i              : in  std_logic;
+		vitesse_i			  : in  std_logic_vector(1 downto 0);
+        decr_cpt_disk_i       : in  std_logic;
+        en_vit_i              : in  std_logic
+        );
 end cpt_vitesse;
 -------------------------------------------------------------------------------
 
@@ -40,18 +41,18 @@ end cpt_vitesse;
 architecture behave of cpt_vitesse is
 
     --| Constantes |-----------------------------------------------------------
-    signal VIT_MAX : std_logic_vector(1 downto 0) := "11";
-    --| Signals |--------------------------------------------------------------
-    signal vit_max_o : out std_logic;
-    signal cpt_fut, cpt_pres : unsigned(3 downto 0);
-
-
+	signal VIT_MAX : unsigned(1 downto 0) := "11";
+	signal VIT_MIN : unsigned(1 downto 0) := "01";
+	
+    --| Signaux |--------------------------------------------------------------
+	signal cpt_pres,cpt_pres : unsigned(1 downto 0);
 begin
+     -- Decodeur d'états futur
+	cpt_next <= vitesse_i when ld_vit_i = '1' else -- Charg. de la vitesse
+				cpt_next - 1 when decr_cpt_disk_i = '1' else -- Decr de la vitesse
+				cpt_next + 1 when decr_cpt_disk_i = '0'; -- Incr de la vitesse 
 
-    --Description concurrente du décodeur d'états futur--odre de priorite : charge, compte, maintien
-    cpt_fut <= (others = '0') when (ld_vit_i = '1') else
-                cpt_pres + 1 when (en_vit_i = '1') else --compte
-                cpt_pres; --maintien
+    
 
     mem: process (clock_i, reset_i)
         begin
@@ -61,12 +62,7 @@ begin
             cpt_pres <= cpt_fut;
             end if;
         end process;
-    --Décodeur de sortie
-    vit_max_o <= '1' when (cpt_pres = VIT_MAX ) else
-                 '0';
-    --Mise a jour de l'etat du compteur
-    cpt_o <= std_logic_vector(cpt_pres);
-
+    
 
 
 end behave;
