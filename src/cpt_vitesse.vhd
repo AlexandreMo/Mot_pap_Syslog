@@ -14,7 +14,7 @@
 --
 --| Modifications |------------------------------------------------------------
 -- Version   Auteur      Date               Description
---
+-- 0.0       AME         11.06.2026         Start-up 
 --
 -------------------------------------------------------------------------------
 
@@ -40,9 +40,9 @@ end cpt_vitesse;
 architecture behave of cpt_vitesse is
 
     --| Constantes |-----------------------------------------------------------
-
+    signal VIT_MAX : std_logic_vector(1 downto 0) := "11";
     --| Signals |--------------------------------------------------------------
-    
+    signal vit_max_o : out std_logic;
     signal cpt_fut, cpt_pres : unsigned(3 downto 0);
 
 
@@ -62,6 +62,8 @@ begin
             end if;
         end process;
     --Décodeur de sortie
+    vit_max_o <= '1' when (cpt_pres = VIT_MAX ) else
+                 '0';
     --Mise a jour de l'etat du compteur
     cpt_o <= std_logic_vector(cpt_pres);
 

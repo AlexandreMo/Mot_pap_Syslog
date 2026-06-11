@@ -29,7 +29,8 @@ library ieee;
     port(
         clock_i : in std_logic; --horloge registre
         nReset_i : in std_logic; --reset asynchrone
-        ld_i : in std_logic; --mode fonctionnementen_i : in std_logic; --autorise decalagesr_ser_i : in std_logic; --entree serie
+        ld_i : in std_logic; 
+        en_i : in std_logic; 
         val_i : in std_logic_vector(3 downto 0);
         reg_o : out std_logic_vector(3 downto 0)
     ); --sorties du registre

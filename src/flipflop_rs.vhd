@@ -22,10 +22,6 @@
 --    0  1 |   1
 --    1  0 |   0
 --    1  1 | interdit
-
-
-
-
 library ieee;
   use ieee.std_logic_1164.all;
 
