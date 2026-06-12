@@ -41,8 +41,8 @@ architecture comport of flipflop_rs is
 begin
   --Adaptation polarite
   -- Decodeur d'etats present
-  D_s <= '1' when (S_i = '1') else -- Set
-         '0' when (R_i = '1') else -- Reset
+  D_s <=  '0' when (R_i = '1') else -- Reset
+          '1' when (S_i = '1') else -- Set
 		      Q_s; -- Maintien 
   
 
